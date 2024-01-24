@@ -1,7 +1,7 @@
 # FruitFirm
 Locate the FruitFirm machine, an Ethernet Cable, a USB drive, and a USB keyboard.
 
-Load my attached python script, and system service file, onto the USB drive, and connect the drive and the USB keyboard to each of the two free FruitFirm USB ports. Connect the FuritFirm to ethernet to any of the wall ports in the Fruit Quality lab (I've been told they are already activated and have tested them as of August).
+Load the above python script, and system service file, onto the USB drive, and connect the drive and the USB keyboard to each of the two free FruitFirm USB ports. Connect the FuritFirm to ethernet to any of the wall ports in the Fruit Quality lab (I've been told they are already activated and have tested them as of August).
 
 Power the FruitFirm on using the switch on the back, when the boot process completes, you should be on the main screen of the FruitFirm graphical interface. It's necessary to get to the Command line interface, this can be done by using the keyboard to enter "Ctrl+Alt+F2". 
 
