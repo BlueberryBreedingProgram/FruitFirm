@@ -20,4 +20,4 @@ Check the service status: "sudo systemctl status firebaseuploadservice"
 
 Restart the FruitFirm and try to do a "run" with some berries, the test run should utilize the test barcode "55".
 
-** NOTE: I believe that when the FruitFirm is operating normally, the files are places on the root of the USB stick in the "/media/pi/usb/", it is possible that they are places in something like "/media/pi/usb/{currentDate}", if thats the case, the python script path will need to be modified to change the TARGET PATH, which is market with a comment. ​***
+** NOTE: I believe that when the FruitFirm is operating normally, the files are places on the root of the USB stick in the "/media/pi/usb/", it is possible that they are places in something like "/media/pi/usb/{currentDate}", if thats the case, the python script path will need to be modified to change the TARGET PATH, which is marked with a comment. ​***
