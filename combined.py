@@ -7,14 +7,12 @@ import json
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 import time
+from collections import deque
 
 def send_data_to_firebase(url, node_name, data):
     json_data = json.dumps(data)
     full_url = f"{url}/{node_name}.json"
-
-    # Make the request (using PATCH to update specific fields)
     response = requests.patch(full_url, data=json_data)
-
     if response.status_code == 200:
         print("Data sent successfully")
     else:
@@ -28,12 +26,10 @@ def process_dat_file(file_path):
         for row in reader:
             firmness_values.append(float(row[1]))
             diameter_values.append(float(row[2]))
-
     avg_firmness = round(np.mean(firmness_values), 3)
     avg_diameter = round(np.mean(diameter_values), 3)
     std_firmness = round(np.std(firmness_values), 3)
     std_diameter = round(np.std(diameter_values), 3)
-
     return {
         "avgFirmness": str(avg_firmness),
         "avgDiameter": str(avg_diameter),
@@ -46,10 +42,24 @@ class FileWatcher(FileSystemEventHandler):
         self.directory = directory
         self.url = url
         self.processed_files = set()
+        self.file_queue = deque()
+        self.file_last_modified = {}
 
     def on_created(self, event):
-        if not event.is_directory and event.src_path.endswith(".dat") and event.src_path not in self.processed_files:
-            self.process_file(event.src_path)
+        if not event.is_directory and event.src_path.endswith(".dat"):
+            self.file_queue.append(event.src_path)
+            self.file_last_modified[event.src_path] = os.path.getmtime(event.src_path)
+
+    def process_files(self):
+        while self.file_queue:
+            file_path = self.file_queue.popleft()
+            if time.time() - self.file_last_modified[file_path] < 10:
+                self.file_queue.append(file_path)
+                continue
+
+            if file_path not in self.processed_files:
+                self.process_file(file_path)
+                self.processed_files.add(file_path)
 
     def process_file(self, file_path):
         data = process_dat_file(file_path)
@@ -57,12 +67,10 @@ class FileWatcher(FileSystemEventHandler):
         current_year = datetime.datetime.now().year
         ref_path = f"fruit_quality_{current_year}/{dummy_code}"
 
-        # Check if the node exists and if dateAndTime or genotype are missing
         check_url = f"{self.url}/{ref_path}.json"
         response = requests.get(check_url)
         json_response = response.json()
 
-        # Define default values for fields
         default_values = {
             'dummyCode': dummy_code,
             'dateAndTime': datetime.datetime.now().isoformat(),
@@ -70,16 +78,16 @@ class FileWatcher(FileSystemEventHandler):
             'Brix': "",
             'Juice Mass': "",
             'TTA': "",
-            'block': "",
-            'box': "",
             'bush': "",
             'mass': "",
             'ml Added': "",
             'notes': "",
             'numOfBerries': "",
+            'project': "",
             'ph': "",
             'site': "",
             'stage': "",
+            'postHarvest': "",
             'week': "100",
             'xBerryMass': ""
         }
@@ -106,6 +114,7 @@ if __name__ == "__main__":
 
     try:
         while True:
+            event_handler.process_files()
             time.sleep(1)
     except KeyboardInterrupt:
         observer.stop()
