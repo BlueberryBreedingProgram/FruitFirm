@@ -1,4 +1,8 @@
 # FruitFirm
+This project is a system service designed to be installed on the Fruit Firm 1000 fruit quality instrument. It leverages are barcode scanning system to keep FruitFirm output synchronized will all other harvest sample information in BlueWeb and Firebase. 
+
+Steps to install:
+
 Locate the FruitFirm machine, an Ethernet Cable, a USB drive, and a USB keyboard.
 
 Load the above python script, and system service file, onto the USB drive, and connect the drive and the USB keyboard to each of the two free FruitFirm USB ports. Connect the FuritFirm to ethernet to any of the wall ports in the Fruit Quality lab (I've been told they are already activated and have tested them as of August).
@@ -20,4 +24,4 @@ Check the service status: "sudo systemctl status firebaseuploadservice"
 
 Restart the FruitFirm and try to do a "run" with some berries, the test run should utilize the test barcode "55".
 
-** NOTE: I believe that when the FruitFirm is operating normally, the files are places on the root of the USB stick in the "/media/pi/usb/", it is possible that they are places in something like "/media/pi/usb/{currentDate}", if thats the case, the python script path will need to be modified to change the TARGET PATH, which is market with a comment. ​***
+** NOTE: I believe that when the FruitFirm is operating normally, the files are places on the root of the USB stick in the "/media/pi/usb/", it is possible that they are places in something like "/media/pi/usb/{currentDate}", if thats the case, the python script path will need to be modified to change the TARGET PATH, which is marked with a comment. ​***
