@@ -11,12 +11,12 @@ from collections import deque
 
 def send_data_to_firebase(url, node_name, data):
     json_data = json.dumps(data)
-    full_url = f"{url}/{node_name}.json"
+    full_url = url + "/" + str(node_name) + ".json"
     response = requests.patch(full_url, data=json_data)
     if response.status_code == 200:
         print("Data sent successfully")
     else:
-        print(f"Failed to send data: {response.text}")
+        print("Failed to send data: " + response.text)
 
 def process_dat_file(file_path):
     firmness_values = []
@@ -65,29 +65,29 @@ class FileWatcher(FileSystemEventHandler):
         data = process_dat_file(file_path)
         dummy_code = os.path.basename(file_path).split(".")[0]
         current_year = datetime.datetime.now().year
-        ref_path = f"fruit_quality_{current_year}/{dummy_code}"
+        ref_path = "fruit_quality_" + current_year + "/" + dummy_code
 
-        check_url = f"{self.url}/{ref_path}.json"
+        check_url = self.url + "/" + ref_path + ".json"
         response = requests.get(check_url)
         json_response = response.json()
 
         default_values = {
-            'dummyCode': dummy_code,
-            'dateAndTime': datetime.datetime.now().isoformat(),
+            'dummyCode': str(dummy_code),
+            'dateAndTime': str(datetime.datetime.now().isoformat()),
             'genotype': "Not Yet Imported",
             'Brix': "",
             'Juice Mass': "",
             'TTA': "",
+            'block': "",
+            'box': "",
             'bush': "",
             'mass': "",
             'ml Added': "",
             'notes': "",
             'numOfBerries': "",
-            'project': "",
             'ph': "",
             'site': "",
             'stage': "",
-            'postHarvest': "",
             'week': "100",
             'xBerryMass': ""
         }
@@ -101,8 +101,7 @@ class FileWatcher(FileSystemEventHandler):
 
 if __name__ == "__main__":
     # ****************** PATH TO UPDATE WITH CORRECT RASPBERRT PI USB DIR **********
-    #TARGET_DIRECTORY = os.path.expanduser("/media/pi/usb/")
-    TARGET_DIRECTORY = os.path.expanduser("/Users/savaglisic/Desktop/datafiles")
+    TARGET_DIRECTORY = os.path.expanduser("/media/usb")
     # ****************** PATH TO UPDATE WITH CORRECT RASPBERRT PI USB DIR **********
 
     firebase_url = "https://berrymaster-c0093-default-rtdb.firebaseio.com"
