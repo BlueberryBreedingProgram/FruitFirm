@@ -64,7 +64,7 @@ class FileWatcher(FileSystemEventHandler):
     def process_file(self, file_path):
         data = process_dat_file(file_path)
         dummy_code = os.path.basename(file_path).split(".")[0]
-        current_year = datetime.datetime.now().year
+        current_year = str(datetime.datetime.now().year)
         ref_path = "fruit_quality_" + current_year + "/" + dummy_code
 
         check_url = self.url + "/" + ref_path + ".json"
